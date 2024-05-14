@@ -25,8 +25,63 @@ This commands includes
 <BR>
 • Other IP Commands e.g. show ip route etc.
 <BR>
+## PROGRAM
+CLIENT.PY
 
+```
+import socket
+from pythonping import ping
+s=socket.socket()
+s.bind(('localhost',8000))
+s.listen(5)
+while True:
+ c,addr=s.accept()
+   print("Connection from",addr)
+   try:
+      hostname=c.recv(1024).decode().strip()
+      if hostname:
+         try:
+            response=str(ping(hostname,verbose=False))
+            c.send(response.encode())
+         except Exception as e:
+ c.send("Ping failed: {}".format(e).encode())
+      else:
+               c.send("Hostname not provided".encode())
+   except Exception as e:
+     print("Error:",e)
+   finally:
+     c.close() 
+#s.close()            
+```
+SERVER.PY
+
+
+```
+import socket
+s=socket.socket()
+s.connect(('localhost',8000))
+try:
+   while True:
+      ip=input("Enter the website you want ti Ping:")
+      s.send(ip.encode())
+      response=s.recv(1024).decode()
+ if response:
+         print("Ping Result:",response)
+      else:
+         print("No response frm server.")
+except Exception as e:
+   print("Error:",e)
+finally:
+   s.close()
+
+```
 ## Output
+CLIENT.PY & SERVER.PY
+
+![image](https://github.com/ZafreenJagir/4.Execution_of_NetworkCommends/assets/144870573/202224c3-92be-486b-b371-0a7998767819)
+
+TRACEROUTE COMMAND:
+![image](https://github.com/ZafreenJagir/4.Execution_of_NetworkCommends/assets/144870573/fa858156-50c9-488a-82e7-2ad9ec045fb5)
 
 ## Result
 Thus Execution of Network commands Performed 
